@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1333</width>
-    <height>775</height>
+    <width>1340</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <widget class="QPushButton" name="uploadImage">
     <property name="geometry">
      <rect>
-      <x>1170</x>
-      <y>0</y>
-      <width>150</width>
+      <x>1130</x>
+      <y>10</y>
+      <width>200</width>
       <height>60</height>
      </rect>
     </property>
@@ -36,6 +36,9 @@
       <height>500</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
     <property name="text">
      <string/>
     </property>
@@ -49,9 +52,326 @@
       <height>500</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
     <property name="text">
      <string/>
     </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>80</y>
+      <width>201</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>To Gray</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>270</y>
+      <width>201</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>convertToInverse</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>550</y>
+      <width>201</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>STEP</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_STEP">
+       <property name="text">
+        <string>STEP</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="textEdit"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>510</y>
+      <width>321</width>
+      <height>124</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="4" column="2">
+      <widget class="QTextEdit" name="textEdit_4"/>
+     </item>
+     <item row="4" column="3">
+      <widget class="QTextEdit" name="textEdit_5"/>
+     </item>
+     <item row="4" column="1">
+      <widget class="QTextEdit" name="textEdit_2"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QTextEdit" name="textEdit_3"/>
+     </item>
+     <item row="3" column="0" colspan="4">
+      <widget class="QCheckBox" name="checkBox_ConstarctStretching">
+       <property name="text">
+        <string>convertToConstarctStretching</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="4">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>convertToConstarctStretching</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>510</y>
+      <width>304</width>
+      <height>124</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="2" column="0">
+      <widget class="QTextEdit" name="textEdit_6"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QTextEdit" name="textEdit_7"/>
+     </item>
+     <item row="2" column="2">
+      <widget class="QTextEdit" name="textEdit_8"/>
+     </item>
+     <item row="1" column="0" colspan="3">
+      <widget class="QCheckBox" name="checkBox_ThresholdBinarization">
+       <property name="text">
+        <string>ThresholdBinarization</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="3">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>ThresholdBinarization</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>510</y>
+      <width>224</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="3" column="2">
+      <widget class="QTextEdit" name="textEdit_13"/>
+     </item>
+     <item row="3" column="1">
+      <widget class="QTextEdit" name="textEdit_12"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QTextEdit" name="textEdit_9"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QTextEdit" name="textEdit_14"/>
+     </item>
+     <item row="1" column="0" colspan="3">
+      <widget class="QCheckBox" name="checkBox_ThresholdBinarization_2">
+       <property name="text">
+        <string>ThresholdConversion</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QTextEdit" name="textEdit_11"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QTextEdit" name="textEdit_10"/>
+     </item>
+     <item row="0" column="0" colspan="3">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>ThresholdConversion</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QTextEdit" name="Bits">
+    <property name="geometry">
+     <rect>
+      <x>900</x>
+      <y>540</y>
+      <width>211</width>
+      <height>70</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_Bits">
+    <property name="geometry">
+     <rect>
+      <x>900</x>
+      <y>510</y>
+      <width>211</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Bits</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>110</y>
+      <width>201</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QRadioButton" name="radioButton">
+       <property name="text">
+        <string>S = r2 + g2 + b2 /3</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_2">
+       <property name="text">
+        <string>S = max(r,g,b)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_3">
+       <property name="text">
+        <string>S = max () + min() /2</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_4">
+       <property name="text">
+        <string>S = -0.213r + 0.715g - 0.072b</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_5">
+       <property name="text">
+        <string>S = sqrt(r2 + g2 + b2)</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>300</y>
+      <width>201</width>
+      <height>234</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>LOG</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_LOG">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>convertToLg</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_log2">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>log2</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_log10">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>log10</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_logn">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>logn</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPlainTextEdit" name="plainTextEdit">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -59,7 +379,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1333</width>
+     <width>1340</width>
      <height>22</height>
     </rect>
    </property>

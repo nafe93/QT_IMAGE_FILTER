@@ -109,7 +109,7 @@ QImage convertToGrayScale(QImage &img, int key = 5)
  * @param img
  * @return
  */
-QImage convertToInverse(QImage &img, int key = 1)
+QImage convertToInverse(QImage &img)
 {
     QSize sizeImage = img.size();
     int width  = sizeImage.width();
