@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = ImageFilter
 TEMPLATE = app
@@ -26,12 +26,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
+    qcustomplot.cpp \
     uploadfile.cpp \
     imagefilter.cpp
 
 HEADERS += \
         mainwindow.h \
-    bits.h
+    bits.h \
+    qcustomplot.h
 
 FORMS += \
         mainwindow.ui

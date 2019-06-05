@@ -83,6 +83,7 @@ int chooseTypeOFGrayScale(int key, int red, int green, int blue)
 QImage convertToGrayScale(QImage &img, int key = 5)
 {
     QSize sizeImage = img.size();
+
     int width  = sizeImage.width();
     int height = sizeImage.height();
 
@@ -99,7 +100,8 @@ QImage convertToGrayScale(QImage &img, int key = 5)
 
             img.setPixel(f1, f2, qRgb(gray ,gray, gray) );
         }
-    }
+    }  
+
     return img;
 }
 
@@ -432,5 +434,155 @@ QImage convertToBits(QImage &img, int step = 2)
     return img;
 }
 
+/**
+ * @brief localPassFilter
+ * @param img
+ * @return
+ */
+QImage localPassFilter(QImage &img)
+{
+    QSize sizeImage = img.size();
+    int width  = sizeImage.width();
+    int height = sizeImage.height();
+
+    QRgb pixel;
+    int ipixel;
+
+    int kernel[3][3];
+
+    for (int f1 = 0; f1<width; f1+=3)
+    {
+        for (int f2 = 0; f2<height; f2+=3)
+        {
+
+            ipixel   = 0.0;
+
+            int localRows = f1 + 3;
+            int localCows = f2 + 3;
+
+            for (int rows = f1; rows < localRows; rows++)
+            {
+                for (int cows = f2; cows < localCows; cows++)
+                {
+                    pixel = img.pixel(rows, cows);
+
+                    kernel[localRows - rows - 1][localCows - cows - 1] = qRed(pixel);
+
+                }
+            }
+
+            for (int k = -1; k <= 1; k++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+
+                    pixel = img.pixel(f1 + k, f2 +j);
+
+                    ipixel = kernel[1][1];
+
+                }
+            }
+
+            img.setPixel( f1, f2, qRgb(ipixel ,ipixel , ipixel) );
+        }
+    }
+
+    return img;
+}
+
+/**
+ * @brief sharpenFilter
+ * @param img
+ * @return
+ */
+QImage sharpenFilter(QImage &img, int z= 1)
+{
+    QSize sizeImage = img.size();
+    int width  = sizeImage.width();
+    int height = sizeImage.height();
+
+    QRgb pixel;
+
+    int sharpen[]= {
+        0,   -z  ,   0,
+        -z,  1+4*z,  -z,
+        0,   -z  ,   0
+    }; // The sharpen filter
+
+    for (int f1 = 0; f1<width; f1++)
+    {
+        for (int f2 = 0; f2<height; f2++)
+        {
+            double linc_r=0, linc_g=0,linc_b=0;
+
+            for(int k=0; k<=2; k++)
+            {
+
+                for(int l=0; l<=2; l++)
+                {
+
+                    pixel = img.pixel(f2 + l -1 , f1 + k -1);
+
+                    linc_r +=( qRed(pixel)   * sharpen[ k*3 + l] );
+
+                }
+            }
+
+            img.setPixel( f1, f2, qRgb(linc_r ,linc_g , linc_b) );
+        }
+    }
+
+    return img;
+}
 
 
+
+/**
+ * @brief bluerFilter
+ * @param img
+ * @return
+ */
+QImage bluerFilter(QImage &img)
+{
+    QSize sizeImage = img.size();
+    int width  = sizeImage.width();
+    int height = sizeImage.height();
+
+    QRgb pixel;
+    int ipixel;
+
+
+    double kernel[3][3] = {
+            {1/9.0, 1/9.0, 1/9.0},
+            {1/9.0, 1/9.0, 1/9.0},
+            {1/9.0, 1/9.0, 1/9.0}
+    };
+
+    for (int f1 = 0; f1<width; f1++)
+    {
+        for (int f2 = 0; f2<height; f2++)
+        {
+
+            ipixel   = 0.0;
+
+
+            for (int k = -1; k <= 1; k++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+
+                    pixel = img.pixel(f1 - k, f2 - j);
+
+                    ipixel   += kernel[j+1][k+1]*qRed(pixel);
+
+                }
+            }
+
+
+            img.setPixel( f1, f2, qRgb(ipixel ,ipixel , ipixel) );
+
+        }
+    }
+
+    return img;
+}

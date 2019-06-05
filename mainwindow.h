@@ -19,6 +19,9 @@ public:
 private slots:
     void on_uploadImage_clicked();
 
+    void makePlot(int maxPixel, std::vector<int> count);
+
+    void makePlot2(int maxPixel, std::vector<int> count);
 private:
     Ui::MainWindow *ui;
 };

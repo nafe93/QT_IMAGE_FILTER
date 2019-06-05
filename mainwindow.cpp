@@ -26,11 +26,54 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->checkBox_LOG, SIGNAL(clicked(bool)), ui->radioButton_logn, SLOT(setEnabled(bool)));
         connect(ui->checkBox_LOG, SIGNAL(clicked(bool)), ui->plainTextEdit, SLOT(setEnabled(bool)));
     }
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::makePlot(int maxPixel, std::vector<int> count)
+{
+    // generate some data:
+    QVector<double> x(255), y(maxPixel); // initialize with entries 0..100
+    for (int i = 0; i < 255; i++)
+    {
+      x[i] = i; // x goes from 0 to 255
+      y[i] = count[i]; // let's plot a quadratic function
+    }
+    // create graph and assign data to it:
+    ui->plot->addGraph();
+    ui->plot->graph(0)->setData(x, y);
+    // give the axes some labels:
+    ui->plot->xAxis->setLabel("x");
+    ui->plot->yAxis->setLabel("y");
+    // set axes ranges, so we see all data:
+    ui->plot->xAxis->setRange(0, 255);
+    ui->plot->yAxis->setRange(0, maxPixel * 0.025);
+    ui->plot->replot();
+}
+
+void MainWindow::makePlot2(int maxPixel, std::vector<int> count)
+{
+    // generate some data:
+    QVector<double> x(255), y(maxPixel); // initialize with entries 0..100
+    for (int i = 0; i < 255; i++)
+    {
+      x[i] = i; // x goes from 0 to 255
+      y[i] = count[i]; // let's plot a quadratic function
+    }
+    // create graph and assign data to it:
+    ui->plot_2->addGraph();
+    ui->plot_2->graph(0)->setData(x, y);
+    // give the axes some labels:
+    ui->plot_2->xAxis->setLabel("x");
+    ui->plot_2->yAxis->setLabel("y");
+    // set axes ranges, so we see all data:
+    ui->plot_2->xAxis->setRange(0, 255);
+    ui->plot_2->yAxis->setRange(0, maxPixel * 0.025);
+    ui->plot_2->replot();
 }
 
 void MainWindow::on_uploadImage_clicked()
@@ -61,6 +104,7 @@ void MainWindow::on_uploadImage_clicked()
     {
         image = convertToGrayScale(image, 5);
     }
+
     //convertToInverse
     if (ui->checkBox->isChecked())
     {
@@ -215,6 +259,70 @@ void MainWindow::on_uploadImage_clicked()
             ui->Bits->setFocus();
         }
     }
+
+    image = localPassFilter(image);
+//    image = sharpenFilter(image);
+    image = bluerFilter(image);
+
+    /**
+     * @brief sizeImage
+     */
+    QSize sizeImage = image.size();
+
+    int width  = sizeImage.width();
+    int height = sizeImage.height();
+
+    int maxPixel = width * height * 3;
+
+    uchar *bits = image.bits();
+
+    vector<int> colorCounter;
+
+     for (int i = 0; i < 255; i++)
+     {
+         int index = 0;
+
+         for(int j = 0; j < maxPixel; j++)
+         {
+             if (i == (int)bits[j])
+             {
+                 index++;
+             }
+         }
+         colorCounter.push_back(index);
+     }
+
+    makePlot(maxPixel, colorCounter);
+
+
+    /**
+     * @brief Original
+     */
+    int widthOriginal  = original.width();
+    int heightOriginal = original.height();
+
+    int maxPixelOriginal = widthOriginal * heightOriginal * 3;
+
+    uchar *bitsOriginal = original.bits();
+
+    vector<int> colorCounterOriginal;
+
+     for (int i = 0; i < 255; i++)
+     {
+         int index = 0;
+
+         for(int j = 0; j < maxPixelOriginal; j++)
+         {
+             if (i == (int)bitsOriginal[j])
+             {
+                 index++;
+             }
+         }
+         colorCounterOriginal.push_back(index);
+     }
+
+    makePlot2(maxPixelOriginal, colorCounterOriginal);
+
 
     // view result
     QPixmap pix;
