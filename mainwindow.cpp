@@ -271,7 +271,10 @@ void MainWindow::on_uploadImage_clicked()
         image = localEqualizationImageFilter(image);
     }
 
-    image = localStaticEqualizationImageFilter(image);
+    if (ui->checkBox_local_histogram_static->isChecked())
+    {
+        image = localStaticEqualizationImageFilter(image);
+    }
 
     /**
      * @brief sizeImage

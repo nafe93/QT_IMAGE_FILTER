@@ -419,6 +419,19 @@
      <string>local histogram equalization</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="checkBox_local_histogram_static">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>750</y>
+      <width>201</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>local static histogram equalization</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

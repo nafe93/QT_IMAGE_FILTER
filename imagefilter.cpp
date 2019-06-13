@@ -609,7 +609,7 @@ QImage localEqualizationImageFilter(QImage &img)
  * @param img
  * @return
  */
-QImage localStaticEqualizationImageFilter(QImage &img)
+QImage localStaticEqualizationImageFilter(QImage &img,float E= 4.0, float k0 = 0.4, float k1 = 0.02, float k2 = 0.4)
 {
     QSize sizeImage = img.size();
     int width  = sizeImage.width();
@@ -692,14 +692,17 @@ QImage localStaticEqualizationImageFilter(QImage &img)
 
             ipixel = round(ipixel * constant);
 
-            if (ipixel > lightAvarage)
+            if (ipixel <= k0 * lightAvarage)
             {
-                int light = lightAvarage - ipixel;
-                img.setPixel( f1, f2, qRgb(light ,light ,light) );
+                float globalDelta = fabs(lightAvarage - qRed(pixel));
+                float localDelta  = fabs(ipixel - qRed(pixel));
+
+                if (k1 * globalDelta <= localDelta && k2 * globalDelta >= localDelta )
+                {
+                    img.setPixel( f1, f2, qRgb(qRed(pixel)*E, qRed(pixel)*E, qRed(pixel)*E) );
+                }
+
             }
-
-
-
         }
     }
 
