@@ -193,7 +193,7 @@
       <x>660</x>
       <y>510</y>
       <width>231</width>
-      <height>121</height>
+      <height>200</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_3">
@@ -391,6 +391,32 @@
       <width>500</width>
       <height>275</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_histogram">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>690</y>
+      <width>201</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>histogram equalization</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_local_histogram">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>720</y>
+      <width>201</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>local histogram equalization</string>
     </property>
    </widget>
   </widget>

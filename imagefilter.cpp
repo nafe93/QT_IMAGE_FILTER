@@ -271,7 +271,7 @@ int computeOutput(int x, int r1, int s1, int r2, int s2)
     }
     else if(r2 < x && x <= 255)
     {
-        result = ((255 - s2)/(255 - r2)) * (x - r2) + s2;
+        result = ((255 - s2)/(256 - r2)) * (x - r2) + s2;
     }
 
     return (int)result;
@@ -431,6 +431,324 @@ QImage convertToBits(QImage &img, int step = 2)
             img.setPixel( f1, f2, qRgb(iiRed ,iiGreen, iiBlue) );
         }
     }
+    return img;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * @brief localSharpenFilter
+ * @param img
+ * @return
+ */
+ vector<int> equalizationImage(QImage &img)
+{
+    QSize sizeImage = img.size();
+
+    int width  = sizeImage.width();
+    int height = sizeImage.height();
+
+    int maxPixel = width * height;
+
+    uchar *bits = img.bits();
+
+    vector<int> colorCounter;
+
+    for (int i = 0; i < 256; i++)
+    {
+        int index = 0;
+
+        for(int j = 0; j < maxPixel; j++)
+        {
+            if (i == (int)bits[j])
+            {
+                index++;
+            }
+        }
+
+        float buffer = (index * 255) /  float(width * height);
+        buffer = round(buffer);
+
+         colorCounter.push_back(buffer);
+     }
+
+     return  colorCounter;
+}
+
+ /**
+  * @brief equalizationImageFilter
+  * @param img
+  * @return
+  */
+ QImage equalizationImageFilter(QImage &img)
+ {
+    QSize sizeImage = img.size();
+    int width  = sizeImage.width();
+    int height = sizeImage.height();
+    int size   = width * height;
+    // constants
+    float constant = 255 / (float)size;
+    //
+    QRgb pixel;
+    float ipixel = 0;
+
+    vector<float> colorCounter;
+
+    for(int i =0; i < 256; i++)
+    {
+        int index = 0;
+
+        for (int f1 = 0; f1<width; f1++)
+        {
+            for (int f2 = 0; f2<height; f2++)
+            {
+                pixel = img.pixel(f1, f2);
+
+                if (i == qRed(pixel))
+                {
+                    index++; //count of color pixel from 0 - 255
+                }
+            }
+        }
+
+        colorCounter.push_back(index);
+    }
+
+    for (int f1 = 0; f1<width; f1++)
+    {
+        for (int f2 = 0; f2<height; f2++)
+        {
+
+            pixel = img.pixel(f1, f2);
+
+            ipixel = 0;
+
+            for (int k = 0; k <= qRed(pixel); k++)
+            {
+               ipixel += colorCounter[k];
+            }
+
+            ipixel = round(ipixel * constant);
+
+            img.setPixel( f1, f2, qRgb(ipixel ,ipixel ,ipixel) );
+        }
+    }
+
+     return img;
+ }
+
+///////////////////////////////////////////////////////////////////////////////
+
+ /**
+ * @brief localEqualizationImageFilter
+ * @param img
+ * @return
+ */
+QImage localEqualizationImageFilter(QImage &img)
+{
+   QSize sizeImage = img.size();
+   int width  = sizeImage.width();
+   int height = sizeImage.height();
+   // constants
+   float constant = 255 / 9;
+   // pixel
+   QRgb pixel;
+   float ipixel = 0;
+
+   vector<float> colorCounter;
+
+   for (int f1 = 0; f1 < width; f1++)
+   {
+       for (int f2 = 0; f2 < height; f2++)
+       {
+
+           colorCounter.clear();
+
+           for(int i =0; i < 256; i++)
+           {
+               int index = 0;
+
+               for (int rows = -1; rows < 2; rows++)
+               {
+                   for (int cows = -1; cows < 2; cows++)
+                   {
+                       pixel = img.pixel(f1 + rows,f2 + cows);
+
+                       if (i == qRed(pixel))
+                       {
+                           index++;
+                       }
+                   }
+                }
+
+                colorCounter.push_back(index);
+           }
+
+           pixel = img.pixel(f1, f2);
+
+           ipixel = 0;
+
+           for (int k = 0; k <= qRed(pixel); k++)
+           {
+              ipixel += colorCounter[k];
+           }
+
+           ipixel = round(ipixel * constant);
+
+
+           img.setPixel( f1, f2, qRgb(ipixel ,ipixel ,ipixel) );
+       }
+   }
+
+   return img;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * @brief equalizationImageFilter
+ * @param img
+ * @return
+ */
+QImage localStaticEqualizationImageFilter(QImage &img)
+{
+    QSize sizeImage = img.size();
+    int width  = sizeImage.width();
+    int height = sizeImage.height();
+    int size   = width * height;
+    // constants
+    float constant = 255 / 9;
+    // pixel
+    QRgb pixel;
+    float ipixel = 0;
+    // avarages
+    float lightAvarage = 0;
+    float lightDispersia = 0;
+
+    vector<float> colorCounter;
+    vector<float> colorCounterAvarage;
+
+    for(int i =0; i < 256; i++)
+    {
+        int index = 0;
+
+        for (int f1 = 0; f1<width; f1++)
+        {
+            for (int f2 = 0; f2<height; f2++)
+            {
+                pixel = img.pixel(f1, f2);
+
+                if (i == qRed(pixel))
+                {
+                    index++; //count of color pixel from 0 - 255
+                }
+            }
+        }
+
+        colorCounterAvarage.push_back(index);
+    }
+
+
+
+    for (int i = 0; i < colorCounterAvarage.size(); i++)
+    {
+        lightAvarage += (i * colorCounterAvarage[i]) / size;
+    }
+
+    for (int f1 = 0; f1 < width; f1++)
+    {
+        for (int f2 = 0; f2 < height; f2++)
+        {
+
+            colorCounter.clear();
+
+            for(int i =0; i < 256; i++)
+            {
+                int index = 0;
+
+                for (int rows = -1; rows < 2; rows++)
+                {
+                    for (int cows = -1; cows < 2; cows++)
+                    {
+                        pixel = img.pixel(f1 + rows,f2 + cows);
+
+                        if (i == qRed(pixel))
+                        {
+                            index++;
+                        }
+                    }
+                 }
+
+                 colorCounter.push_back(index);
+            }
+
+            pixel = img.pixel(f1, f2);
+
+            ipixel = 0;
+
+            for (int k = 0; k <= qRed(pixel); k++)
+            {
+               ipixel += colorCounter[k];
+            }
+
+            ipixel = round(ipixel * constant);
+
+            if (ipixel > lightAvarage)
+            {
+                int light = lightAvarage - ipixel;
+                img.setPixel( f1, f2, qRgb(light ,light ,light) );
+            }
+
+
+
+        }
+    }
+
+    return img;
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * @brief localSharpenFilter
+ * @param img
+ * @return
+ */
+QImage localSharpenFilter(QImage &img)
+{
+    QSize sizeImage = img.size();
+    int width  = sizeImage.width();
+    int height = sizeImage.height();
+    int size   = width * height;
+
+    QRgb pixel;
+    int ipixel;
+    //sum of all pixel
+    float index = 0;
+
+    uchar *bits = img.bits();
+
+    for(int j = 0; j < size ; j++)
+    {
+        index++;
+    }
+
+    index = index / size;
+
+    qDebug() << index;
+
+
+    for (int f1 = 0; f1<width; f1++)
+    {
+        for (int f2 = 0; f2<height; f2++)
+        {
+
+            ipixel   = 0.0;
+
+            img.setPixel( f1, f2, qRgb(ipixel ,ipixel , ipixel) );
+        }
+    }
+
     return img;
 }
 

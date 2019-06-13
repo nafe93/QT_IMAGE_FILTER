@@ -51,7 +51,7 @@ void MainWindow::makePlot(int maxPixel, std::vector<int> count)
     ui->plot->yAxis->setLabel("y");
     // set axes ranges, so we see all data:
     ui->plot->xAxis->setRange(0, 255);
-    ui->plot->yAxis->setRange(0, maxPixel * 0.025);
+    ui->plot->yAxis->setRange(0, 100 * 0.05);
     ui->plot->replot();
 }
 
@@ -72,7 +72,7 @@ void MainWindow::makePlot2(int maxPixel, std::vector<int> count)
     ui->plot_2->yAxis->setLabel("y");
     // set axes ranges, so we see all data:
     ui->plot_2->xAxis->setRange(0, 255);
-    ui->plot_2->yAxis->setRange(0, maxPixel * 0.025);
+    ui->plot_2->yAxis->setRange(0, 100 * 0.05);
     ui->plot_2->replot();
 }
 
@@ -260,9 +260,18 @@ void MainWindow::on_uploadImage_clicked()
         }
     }
 
-    image = localPassFilter(image);
-//    image = sharpenFilter(image);
-    image = bluerFilter(image);
+
+    if (ui->checkBox_histogram->isChecked())
+    {
+        image = equalizationImageFilter(image);
+    }
+
+    if (ui->checkBox_local_histogram->isChecked())
+    {
+        image = localEqualizationImageFilter(image);
+    }
+
+    image = localStaticEqualizationImageFilter(image);
 
     /**
      * @brief sizeImage
@@ -272,28 +281,13 @@ void MainWindow::on_uploadImage_clicked()
     int width  = sizeImage.width();
     int height = sizeImage.height();
 
-    int maxPixel = width * height * 3;
-
-    uchar *bits = image.bits();
+    int maxPixel = width * height;
 
     vector<int> colorCounter;
 
-     for (int i = 0; i < 255; i++)
-     {
-         int index = 0;
-
-         for(int j = 0; j < maxPixel; j++)
-         {
-             if (i == (int)bits[j])
-             {
-                 index++;
-             }
-         }
-         colorCounter.push_back(index);
-     }
+    colorCounter = equalizationImage(image);
 
     makePlot(maxPixel, colorCounter);
-
 
     /**
      * @brief Original
@@ -301,25 +295,11 @@ void MainWindow::on_uploadImage_clicked()
     int widthOriginal  = original.width();
     int heightOriginal = original.height();
 
-    int maxPixelOriginal = widthOriginal * heightOriginal * 3;
-
-    uchar *bitsOriginal = original.bits();
+    int maxPixelOriginal = widthOriginal * heightOriginal;
 
     vector<int> colorCounterOriginal;
 
-     for (int i = 0; i < 255; i++)
-     {
-         int index = 0;
-
-         for(int j = 0; j < maxPixelOriginal; j++)
-         {
-             if (i == (int)bitsOriginal[j])
-             {
-                 index++;
-             }
-         }
-         colorCounterOriginal.push_back(index);
-     }
+    colorCounterOriginal = equalizationImage(original);
 
     makePlot2(maxPixelOriginal, colorCounterOriginal);
 
