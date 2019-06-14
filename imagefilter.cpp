@@ -729,8 +729,11 @@ QImage localEqualizationImageFilter(QImage &img)
 //    return img;
 
 //}
-QImage localStaticEqualizationImageFilter(QImage &img,float E = 4.0, float k0 = 0.4, float k1 = 0.02, float k2 = 0.4)
+QImage localStaticEqualizationImageFilter(QImage &img, float E = 3.0, float k0 = 0.5, float k1 = 0.04, float k2 = 0.4)
 {
+
+    QImage original = img;
+
     QSize sizeImage = img.size();
 
     int width  = sizeImage.width();
@@ -822,7 +825,7 @@ QImage localStaticEqualizationImageFilter(QImage &img,float E = 4.0, float k0 = 
 
                 if (ipixel < 256)
                 {
-                    img.setPixel( f1, f2, qRgb(ipixel ,ipixel , ipixel) );
+                    original.setPixel( f1, f2, qRgb(ipixel ,ipixel , ipixel) );
                 }
 
 
@@ -831,7 +834,7 @@ QImage localStaticEqualizationImageFilter(QImage &img,float E = 4.0, float k0 = 
         }
     }
 
-    return img;
+    return original;
 }
 
 
