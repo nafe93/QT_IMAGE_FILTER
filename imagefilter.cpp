@@ -609,126 +609,231 @@ QImage localEqualizationImageFilter(QImage &img)
  * @param img
  * @return
  */
-QImage localStaticEqualizationImageFilter(QImage &img,float E= 4.0, float k0 = 0.4, float k1 = 0.02, float k2 = 0.4)
+//QImage localStaticEqualizationImageFilter(QImage &img,float E= 4.0, float k0 = 0.4, float k1 = 0.02, float k2 = 0.4)
+//{
+//    QSize sizeImage = img.size();
+//    int width  = sizeImage.width();
+//    int height = sizeImage.height();
+//    int size   = width * height;
+//    // constants
+//    float constant = 255 / 9;
+//    // pixel
+//    QRgb pixel;
+//    float ipixel = 0;
+//    // avarages
+//    float lightAvarage = 0;
+//    //delta
+//    float globalDelta = 0;
+
+//    vector<float> colorCounter;
+//    vector<float> colorCounterAvarage;
+
+//    for(int i =0; i < 256; i++)
+//    {
+//        int index = 0;
+
+//        for (int f1 = 0; f1<width; f1++)
+//        {
+//            for (int f2 = 0; f2<height; f2++)
+//            {
+//                pixel = img.pixel(f1, f2);
+
+//                if (i == qRed(pixel))
+//                {
+//                    index++; //count of color pixel from 0 - 255
+//                }
+//            }
+//        }
+
+
+//        colorCounterAvarage.push_back(index/size);
+//    }
+
+//    for (int i = 0; i < colorCounterAvarage.size(); i++)
+//    {
+//        lightAvarage += (i * colorCounterAvarage[i]);
+//    }
+
+
+
+//    for (int i = 0; i < colorCounterAvarage.size(); i++)
+//    {
+//        globalDelta += pow((i - lightAvarage),2) * colorCounterAvarage[i] ;
+//    }
+
+
+
+//    for (int f1 = 0; f1 < width; f1++)
+//    {
+//        for (int f2 = 0; f2 < height; f2++)
+//        {
+
+//            colorCounter.clear();
+
+//            for(int i =0; i < 256; i++)
+//            {
+//                int index = 0;
+
+//                for (int rows = -1; rows < 2; rows++)
+//                {
+//                    for (int cows = -1; cows < 2; cows++)
+//                    {
+//                        pixel = img.pixel(f1 + rows,f2 + cows);
+
+//                        if (i == qRed(pixel))
+//                        {
+//                            index++;
+//                        }
+//                    }
+//                 }
+
+//                 colorCounter.push_back(index/9);
+//            }
+
+//            pixel = img.pixel(f1, f2);
+
+//            ipixel = 0;
+
+//            for (int k = 0; k < colorCounter.size(); k++)
+//            {
+//               ipixel += k * colorCounter[k];
+//            }
+
+
+//            if (ipixel <= k0 * lightAvarage)
+//            {
+
+//                float localDelta  = 0;
+
+//                for (int i = 0; i < colorCounter.size(); i++)
+//                {
+//                   localDelta += pow((i - ipixel),2) * colorCounter[i];
+//                }
+
+
+//                if (k1 * sqrt(globalDelta) <= sqrt(localDelta) && k2 * sqrt(globalDelta) >= sqrt(localDelta) )
+//                {
+
+//                    if (qRed(pixel)* E < 256)
+//                    {
+//                         img.setPixel( f1, f2, qRgb(qRed(pixel)*E, qRed(pixel)*E, qRed(pixel)*E) );
+//                    }
+
+
+//                }
+
+//            }
+//        }
+//    }
+
+//    return img;
+
+//}
+QImage localStaticEqualizationImageFilter(QImage &img,float E = 4.0, float k0 = 0.4, float k1 = 0.02, float k2 = 0.4)
 {
     QSize sizeImage = img.size();
+
     int width  = sizeImage.width();
     int height = sizeImage.height();
-    int size   = width * height;
-    // constants
-    float constant = 255 / 9;
-    // pixel
-    QRgb pixel;
-    float ipixel = 0;
-    // avarages
-    float lightAvarage = 0;
-    //delta
-    float globalDelta = 0;
+    int sq     = width * height;
 
-    vector<float> colorCounter;
-    vector<float> colorCounterAvarage;
+    // global
+    float expectedGlobal = 0;
+    float varianceGlobal = 0;
 
-    for(int i =0; i < 256; i++)
-    {
-        int index = 0;
-
-        for (int f1 = 0; f1<width; f1++)
-        {
-            for (int f2 = 0; f2<height; f2++)
-            {
-                pixel = img.pixel(f1, f2);
-
-                if (i == qRed(pixel))
-                {
-                    index++; //count of color pixel from 0 - 255
-                }
-            }
-        }
-
-
-        colorCounterAvarage.push_back(index/size);
-    }
-
-    for (int i = 0; i < colorCounterAvarage.size(); i++)
-    {
-        lightAvarage += (i * colorCounterAvarage[i]);
-    }
-
-
-
-    for (int i = 0; i < colorCounterAvarage.size(); i++)
-    {
-        globalDelta += pow((i - lightAvarage),2) * colorCounterAvarage[i] ;
-    }
-
+    //local
+    float expectedlocal;
+    float variancelocal;
 
 
     for (int f1 = 0; f1 < width; f1++)
     {
         for (int f2 = 0; f2 < height; f2++)
         {
+            QRgb pixel =  img.pixel(f1, f2);
 
-            colorCounter.clear();
+            int red = qRed(pixel);
 
-            for(int i =0; i < 256; i++)
+            expectedGlobal += red;
+        }
+    }
+
+    expectedGlobal = expectedGlobal / (float)sq;
+
+
+    for (int f1 = 0; f1 < width; f1++)
+    {
+        for (int f2 = 0; f2 < height; f2++)
+        {
+            QRgb pixel =  img.pixel(f1, f2);
+
+            int red = qRed(pixel);
+
+            varianceGlobal += pow(float(red) - expectedGlobal, 2);
+        }
+    }
+
+    varianceGlobal = sqrt(varianceGlobal / (float)sq);
+
+    for (int f1 = 0; f1 < width; f1++)
+    {
+        for (int f2 = 0; f2 < height; f2++)
+        {
+
+            expectedlocal = 0;
+            variancelocal = 0;
+
+            for (int rows = -1; rows < 2; rows++)
             {
-                int index = 0;
-
-                for (int rows = -1; rows < 2; rows++)
+                for (int cows = -1; cows < 2; cows++)
                 {
-                    for (int cows = -1; cows < 2; cows++)
-                    {
-                        pixel = img.pixel(f1 + rows,f2 + cows);
+                    QRgb pixel =  img.pixel(f1 + rows, f2 + cows);
 
-                        if (i == qRed(pixel))
-                        {
-                            index++;
-                        }
-                    }
-                 }
+                    int red = qRed(pixel);
 
-                 colorCounter.push_back(index/9);
+                    expectedlocal += (float)red;
+
+                }
             }
 
-            pixel = img.pixel(f1, f2);
+            expectedlocal = expectedlocal / 9;
 
-            ipixel = 0;
-
-            for (int k = 0; k < colorCounter.size(); k++)
+            for (int rows = -1; rows < 2; rows++)
             {
-               ipixel += k * colorCounter[k];
+                for (int cows = -1; cows < 2; cows++)
+                {
+                    QRgb pixel =  img.pixel(f1 + rows, f2 + cows);
+
+                    int red = qRed(pixel);
+
+                    variancelocal += pow(float(red) - expectedlocal, 2);
+                }
             }
 
+            variancelocal = sqrt(variancelocal / 9);
 
-            if (ipixel <= k0 * lightAvarage)
+            qDebug() << "local" << expectedlocal << "====" << variancelocal << "global" << expectedGlobal << "======" << varianceGlobal;
+
+
+            if (expectedlocal <= (k0 * expectedGlobal) && variancelocal >= (k1 * varianceGlobal) && variancelocal <= (k2 * varianceGlobal))
             {
+                QRgb pixel = img.pixel(f1, f2);
+                int  ipixel= qRed(pixel) * E;
 
-                float localDelta  = 0;
-
-                for (int i = 0; i < colorCounter.size(); i++)
+                if (ipixel < 256)
                 {
-                   localDelta += pow((i - ipixel),2) * colorCounter[i];
+                    img.setPixel( f1, f2, qRgb(ipixel ,ipixel , ipixel) );
                 }
 
 
-                if (k1 * sqrt(globalDelta) <= sqrt(localDelta) && k2 * sqrt(globalDelta) >= sqrt(localDelta) )
-                {
-
-                    if (qRed(pixel)* E < 256)
-                    {
-                         img.setPixel( f1, f2, qRgb(qRed(pixel)*E, qRed(pixel)*E, qRed(pixel)*E) );
-                    }
-
-
-                }
-
             }
+
         }
     }
 
     return img;
-
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -757,9 +862,6 @@ QImage localSharpenFilter(QImage &img)
     }
 
     index = index / size;
-
-    qDebug() << index;
-
 
     for (int f1 = 0; f1<width; f1++)
     {
