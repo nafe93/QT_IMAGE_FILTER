@@ -1,4 +1,4 @@
-#include <QGraphicsScene>
+﻿#include <QGraphicsScene>
 #include <QFileDialog>
 #include <QWidget>
 #include <QDebug>
@@ -622,7 +622,8 @@ QImage localStaticEqualizationImageFilter(QImage &img,float E= 4.0, float k0 = 0
     float ipixel = 0;
     // avarages
     float lightAvarage = 0;
-    float lightDispersia = 0;
+    //delta
+    float globalDelta = 0;
 
     vector<float> colorCounter;
     vector<float> colorCounterAvarage;
@@ -644,15 +645,23 @@ QImage localStaticEqualizationImageFilter(QImage &img,float E= 4.0, float k0 = 0
             }
         }
 
-        colorCounterAvarage.push_back(index);
+
+        colorCounterAvarage.push_back(index/size);
+    }
+
+    for (int i = 0; i < colorCounterAvarage.size(); i++)
+    {
+        lightAvarage += (i * colorCounterAvarage[i]);
     }
 
 
 
     for (int i = 0; i < colorCounterAvarage.size(); i++)
     {
-        lightAvarage += (i * colorCounterAvarage[i]) / size;
+        globalDelta += pow((i - lightAvarage),2) * colorCounterAvarage[i] ;
     }
+
+
 
     for (int f1 = 0; f1 < width; f1++)
     {
@@ -678,28 +687,39 @@ QImage localStaticEqualizationImageFilter(QImage &img,float E= 4.0, float k0 = 0
                     }
                  }
 
-                 colorCounter.push_back(index);
+                 colorCounter.push_back(index/9);
             }
 
             pixel = img.pixel(f1, f2);
 
             ipixel = 0;
 
-            for (int k = 0; k <= qRed(pixel); k++)
+            for (int k = 0; k < colorCounter.size(); k++)
             {
-               ipixel += colorCounter[k];
+               ipixel += k * colorCounter[k];
             }
 
-            ipixel = round(ipixel * constant);
 
             if (ipixel <= k0 * lightAvarage)
             {
-                float globalDelta = fabs(lightAvarage - qRed(pixel));
-                float localDelta  = fabs(ipixel - qRed(pixel));
 
-                if (k1 * globalDelta <= localDelta && k2 * globalDelta >= localDelta )
+                float localDelta  = 0;
+
+                for (int i = 0; i < colorCounter.size(); i++)
                 {
-                    img.setPixel( f1, f2, qRgb(qRed(pixel)*E, qRed(pixel)*E, qRed(pixel)*E) );
+                   localDelta += pow((i - ipixel),2) * colorCounter[i];
+                }
+
+
+                if (k1 * sqrt(globalDelta) <= sqrt(localDelta) && k2 * sqrt(globalDelta) >= sqrt(localDelta) )
+                {
+
+                    if (qRed(pixel)* E < 256)
+                    {
+                         img.setPixel( f1, f2, qRgb(qRed(pixel)*E, qRed(pixel)*E, qRed(pixel)*E) );
+                    }
+
+
                 }
 
             }
